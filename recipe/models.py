@@ -16,7 +16,6 @@ class RecipeCategory(models.Model):
     def __str__(self):
         return self.name
 
-
 def get_default_recipe_category():
     """
     Returns a default recipe type.
@@ -48,7 +47,7 @@ class Recipe(models.Model):
         return self.title
 
     def get_total_number_of_likes(self):
-        return self.recipelike_set.count()
+        return self.likes.count()
 
     def get_total_number_of_bookmarks(self):
         return self.bookmarked_by.count()
@@ -60,7 +59,7 @@ class RecipeLike(models.Model):
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='likes')
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

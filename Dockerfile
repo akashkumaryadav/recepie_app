@@ -21,4 +21,4 @@ EXPOSE 8000
 # copy project
 COPY . .
 
-CMD ["python", "manage.py" ,"runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
