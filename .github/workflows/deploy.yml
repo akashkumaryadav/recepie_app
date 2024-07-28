@@ -27,15 +27,26 @@ jobs:
         docker-compose -f docker-compose.yml build
         docker-compose -f docker-compose.yml push
 
-    - name: Add SSH Key
+    - name: Install SSH Key
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: List .ssh Directory
+      run: ls -la ~/.ssh
+
+    - name: Add Host to known_hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Add SSH Key to SSH Agent
+      run: |
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_rsa
 
     - name: Test SSH Connection
-      run: ssh -v -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo SSH Connection Successful"
+      run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo SSH Connection Successful"
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.3
