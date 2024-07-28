@@ -57,7 +57,7 @@ jobs:
         script: |
           docker-compose down
           docker-compose pull
-          docker-compose up -d    Settings
+          docker-compose up -d
       env:
         DEBUG: 'true'
 
