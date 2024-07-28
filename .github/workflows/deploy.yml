@@ -15,12 +15,12 @@ jobs:
 
     - name: Set up environment variables
       run: |
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-        echo "DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}" >> $GITHUB_ENV
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}" >> .env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
 
     - name: Build and push Docker images
       run: |
@@ -31,7 +31,7 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.3
