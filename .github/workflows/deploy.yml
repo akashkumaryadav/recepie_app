@@ -19,32 +19,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up environment variables
-        run: |
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}" >> .env
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-          echo "EMAIL_USER=${{secrets.EMAIL_USER}}" >> .env
-          echo "EMAIL_PASSWORD=${{secrets.EMAIL_PASSWORD}}" >> .env
+      # - name: Set up environment variables
+      #   run: |
+      #     echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+      #     echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+      #     echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+      #     echo "DB_HOSTNAME=${{ secrets.DB_HOSTNAME }}" >> .env
+      #     echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+      #     echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+      #     echo "EMAIL_USER=${{secrets.EMAIL_USER}}" >> .env
+      #     echo "EMAIL_PASSWORD=${{secrets.EMAIL_PASSWORD}}" >> .env
           
-      - name: Install dependencies
-        run: |
-          mkdir logs
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt 
+      # - name: Install dependencies
+      #   run: |
+      #     mkdir logs
+      #     python -m pip install --upgrade pip
+      #     pip install -r requirements.txt 
       
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  # Specify your Python version
+      # - name: Set up Python
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: '3.9'  # Specify your Python version
 
-      - name: Run tests and generate coverage report
-        run: |
-          pytest
-          coverage html
+      # - name: Run tests and generate coverage report
+      #   run: |
+      #     pytest
+      #     coverage html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
