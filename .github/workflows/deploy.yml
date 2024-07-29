@@ -38,8 +38,8 @@ jobs:
 
       - name: Run tests and generate coverage report
         run: |
-          pytest --cov=your_package_name --cov-report=html  # Generate the coverage report
-
+          pytest
+          coverage html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
