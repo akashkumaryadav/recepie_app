@@ -51,6 +51,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd ./recepie_app
+            git pull
             echo "" > .env
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
