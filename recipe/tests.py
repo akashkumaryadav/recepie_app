@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .models import Recipe, RecipeCategory, RecipeLike
+from .models import Recipe, RecipeCategory, RecipeLike, get_default_recipe_category
 from django.utils import timezone
 from datetime import timedelta
 
@@ -15,8 +15,10 @@ class RecipeCategoryModelTest(TestCase):
         self.assertEqual(str(self.category), 'Desserts')
 
     def test_get_default_recipe_category(self):
-        default_category = RecipeCategory.objects.get_or_create(name='Others')[0]
-        self.assertEqual(default_category.name, 'Others')
+            default_category = get_default_recipe_category()
+            self.assertEqual(default_category.name, 'Others')
+            another_default_category = get_default_recipe_category()
+            self.assertEqual(default_category.id, another_default_category.id)
 
 class RecipeModelTest(TestCase):
     def setUp(self):

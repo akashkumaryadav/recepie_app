@@ -28,6 +28,17 @@ jobs:
           echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
 
+      - name: Run tests and generate coverage report
+        run: |
+          pytest --cov=your_package_name --cov-report=html  # Generate the coverage report
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./htmlcov # Path to the coverage report directory
+          publish_branch: gh-pages # The branch to deploy to
+
       - name: Build and push Docker images
         run: |
           docker-compose -f docker-compose.yml build
