@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Recipe, RecipeCategory, RecipeLike
+from .models import Recipe, RecipeCategory, RecipeLike, get_default_recipe_category
 
 
 class RecipeCategorySerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
     username = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
-    category = RecipeCategorySerializer()
+    category = RecipeCategorySerializer(required=False)
     total_number_of_likes = serializers.SerializerMethodField()
     total_number_of_bookmarks = serializers.SerializerMethodField()
 
@@ -36,12 +36,25 @@ class RecipeSerializer(serializers.ModelSerializer):
         return obj.get_total_number_of_bookmarks()
 
     def create(self, validated_data):
-        category = validated_data.pop('category')
-        category_instance, created = RecipeCategory.objects.get_or_create(
-            **category)
+        category_data = validated_data.pop('category', None)  # Get category data if exists
+        if category_data:
+            category_instance, created = RecipeCategory.objects.get_or_create(
+                **category_data
+            )
+        else:
+            # Use the default category if no category is provided
+            category_instance = get_default_recipe_category()
+
         recipe_instance = Recipe.objects.create(
-            **validated_data, category=category_instance)
+            **validated_data, category=category_instance
+        )
         return recipe_instance
+        # category = validated_data.pop('category',None)
+        # category_instance, created = RecipeCategory.objects.get_or_create(
+        #     **category)
+        # recipe_instance = Recipe.objects.create(
+        #     **validated_data, category=category_instance)
+        # return recipe_instance
 
     def update(self, instance, validated_data):
         if 'category' in validated_data:

@@ -2,10 +2,19 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.http import JsonResponse
+from decouple import config
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 from .models import Recipe, RecipeLike
 from .serializers import RecipeLikeSerializer, RecipeSerializer
 from .permissions import IsAuthorOrReadOnly
+from .tasks import send_email_like_notification
+
+User = get_user_model()
 
 
 class RecipeListAPIView(generics.ListAPIView):
@@ -65,3 +74,32 @@ class RecipeLikeAPIView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+def test_email(request):
+    subject = 'Test Email'
+    message = 'This is a test email sent from Django.'
+    recipient_list = ['akash.kumar.yadav.cse@gmail.com']  # Replace with your recipient's email
+
+    try:
+        send_mail(subject, message, config("EMAIL_USER"), recipient_list)
+        return JsonResponse({'status': 'Email sent successfully!'})
+    except Exception as e:
+        return JsonResponse({'status': 'Failed to send email', 'error': str(e)})
+
+@csrf_exempt
+def like_recipe(request, recipe_id):
+    if request.method == 'POST':
+        permission_classes = (IsAuthenticated,)
+        user = User.objects.first()
+        if not user.is_authenticated:
+            return JsonResponse({'status': 'You must be logged in to like a recipe.'}, status=403)
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        print(recipe.author.email)
+        if RecipeLike.objects.filter(recipe=recipe, user=user).exists():
+            return JsonResponse({'status': 'You have already liked this recipe.'})
+        RecipeLike.objects.create(recipe=recipe, user=user)
+        likes_count = recipe.get_total_number_of_likes()
+        send_email_like_notification.delay(recipe.author.email,likes_count)
+        return JsonResponse({'status': 'Recipe liked successfully!'})
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)

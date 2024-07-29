@@ -15,6 +15,27 @@ services:
       - .:/app
       - ./logs:/app/logs
 
+  celery:
+    build:
+      context: .
+    image: udaky/recepie_app:latest # Use the same image as the web service
+    command: celery -A recipe worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
   db:
     image: postgres:12
     environment:
@@ -24,9 +45,10 @@ services:
     volumes:
       - pgdata:/var/lib/postgres/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
 volumes:
   pgdata:

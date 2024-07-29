@@ -20,7 +20,8 @@ def get_default_recipe_category():
     """
     Returns a default recipe type.
     """
-    return RecipeCategory.objects.get_or_create(name='Others')[0]
+    category, created = RecipeCategory.objects.get_or_create(name='Others')
+    return category
 
 
 class Recipe(models.Model):
@@ -30,7 +31,7 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="recipes", on_delete=models.CASCADE)
     category = models.ForeignKey(
-        RecipeCategory, related_name="recipe_list", on_delete=models.SET(get_default_recipe_category))
+            RecipeCategory, related_name="recipe_list", on_delete=models.SET(get_default_recipe_category), default=get_default_recipe_category)
     picture = models.ImageField(upload_to='uploads')
     title = models.CharField(max_length=200)
     desc = models.CharField(_('Short description'), max_length=200)
