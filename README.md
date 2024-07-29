@@ -1,5 +1,5 @@
 [![Deploy to EC2](https://github.com/akashkumaryadav/recepie_app/actions/workflows/deploy.yml/badge.svg)](https://github.com/akashkumaryadav/recepie_app/actions/workflows/deploy.yml)
-![Static Badge](https://img.shields.io/badge/View%20Test%20Coverage-blue?link=https%3A%2F%2Fakashkumaryadav.github.io%2Frecepie_app%2Findex.html)
+[![Static Badge](https://img.shields.io/badge/View%20Test%20Coverage-blue?link=https%3A%2F%2Fakashkumaryadav.github.io%2Frecepie_app%2Findex.html)](https://akashkumaryadav.github.io/recepie_app/index.html)
 
 
 
